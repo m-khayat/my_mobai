@@ -18,6 +18,7 @@ class CommentMobileController extends Controller
     public function store(Request $request)
     {
         $comment = new Comment();
+        $model = new ModelAi();
 		$comment->line = $request->line;
         $res = $model->predict_aspect_sentiment($request->line);
         $comment->battery = $res['battery'];

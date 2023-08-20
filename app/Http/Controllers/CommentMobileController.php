@@ -18,6 +18,11 @@ class CommentMobileController extends Controller
     {
         $comment = new Comment();
 		$comment->line = $request->line;
+        $res = $model->predict_aspect_sentiment($request->line);
+        $comment->battery = $res['battery'];
+        $comment->speed = $res['speed'];
+        $comment->camera = $res['camera'];
+        $comment->memory = $res['memory'];
 		$comment->user_id = Auth::user()->id;
 		$comment->mobile_id = $request->mobile_id;
 

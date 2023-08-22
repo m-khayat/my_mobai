@@ -16,13 +16,81 @@ class MobileController extends Controller
 
     }
 
-    public function show($id)
-    {
-        $mobile = Mobile::find($id);
-        if (isset($mobile)) {
-        return $mobile; 
+//     public function show($id)
+// {
+//     $mobile = Mobile::find($id);
+
+//     if (isset($mobile)) {
+//         $commentsCount = $mobile->comment()->count();
+
+//         return response()->json([
+//             'mobile' => $mobile,
+//             'comments_count' => $commentsCount,
+//         ]);
+//     } else {
+//         return response()->json([
+//             'message' => 'Mobile not found.',
+//         ], 404);
+//     }
+// }
+
+
+// ...
+
+public function show($id)
+{
+    $mobile = Mobile::find($id);
+
+    if (isset($mobile)) {
+        // Count the number of positive battery comments
+        $commentsCount = $mobile->comment()->count();
+        //battery
+        $positiveBatteryCommentsCount = ($mobile->comment()->where('battery', 'positive')->count());
+        $NegativeBatteryCommentsCount = ($mobile->comment()->where('battery', 'Negative')->count());
+        $NeutralBatteryCommentsCount = ($mobile->comment()->where('battery', 'Neutral')->count());
+        //Speed
+        $positiveSpeedCommentsCount = ($mobile->comment()->where('speed', 'positive')->count());
+        $NegativeSpeedCommentsCount = ($mobile->comment()->where('speed', 'Negative')->count());
+        $NeutralSpeedCommentsCount = ($mobile->comment()->where('speed', 'Neutral')->count());
+         //camera
+         $positivecameraCommentsCount = ($mobile->comment()->where('camera', 'positive')->count());
+         $NegativecameraCommentsCount = ($mobile->comment()->where('camera', 'Negative')->count());
+         $NeutralcameraCommentsCount = ($mobile->comment()->where('camera', 'Neutral')->count());
+         //memory
+         $positivememoryCommentsCount = ($mobile->comment()->where('memory', 'positive')->count());
+         $NegativememoryCommentsCount = ($mobile->comment()->where('memory', 'Negative')->count());
+         $NeutralmemoryCommentsCount = ($mobile->comment()->where('memory', 'Neutral')->count());
+        return response()->json([
+            'mobile' => $mobile,
+            'comments' => $commentsCount ,
+            //battery
+            'positive_battery_comments_count' => $positiveBatteryCommentsCount/$commentsCount,
+            'nigative_battery_comments_count' => $NegativeBatteryCommentsCount /$commentsCount,
+            'Neutral_battery_comments_count' => $NeutralBatteryCommentsCount /$commentsCount,
+            //speed
+            'positive_speed_comments_count' => $positiveSpeedCommentsCount/$commentsCount,
+            'nigative_speed_comments_count' => $NegativeSpeedCommentsCount /$commentsCount,
+            'Neutral_speed_comments_count' => $NeutralSpeedCommentsCount /$commentsCount,
+            //camera
+            'positive_camera_comments_count' => $positivecameraCommentsCount/$commentsCount,
+            'nigative_camera_comments_count' => $NegativecameraCommentsCount/$commentsCount ,
+            'Neutral_camera_comments_count' => $NeutralcameraCommentsCount/$commentsCount ,
+             //memory
+             'positive_memory_comments_count' => $positivememoryCommentsCount/$commentsCount,
+             'nigative_memory_comments_count' => $NegativememoryCommentsCount /$commentsCount,
+             'Neutral_memory_comments_count' => $NeutralmemoryCommentsCount /$commentsCount,
+
+             //the finale rate
+             'rate' => (($positiveBatteryCommentsCount+$positiveSpeedCommentsCount+$positivecameraCommentsCount+$positivememoryCommentsCount)/4)*100
+
+        ]);
+    } else {
+        return response()->json([
+            'message' => 'Mobile not found.',
+        ], 404);
     }
-    }
+}
+
 
     public function store(Request $request)
     {
@@ -32,7 +100,7 @@ class MobileController extends Controller
             $mobile->name = $request->name;
             $mobile->user_id = Auth::user()->id;
             $mobile->camera = $request->camera;
-            $mobile->rate = $request->rate;
+           // $mobile->rate = $request->rate;
             $mobile->ram = $request->ram;
             $mobile->price = $request->price;
             $mobile->storage = $request->storage;
